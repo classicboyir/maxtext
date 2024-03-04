@@ -201,8 +201,9 @@ def scps(slices, run_name_dir, zip_name):
     for worker_num in range(cur_slice.num_workers):
       command = [
           "gcloud", "compute", "tpus", "tpu-vm", "scp", f"--worker={worker_num}", zip_path,
-          f"{cur_slice.name}:~/", "--strict-host-key-checking=no", f"--project={args.PROJECT}", f"--zone={args.ZONE}"
+          f"{cur_slice.name}:~/", "--strict-host-key-checking=no", f"--project={args.PROJECT}", f"--zone={args.ZONE}", "-- -o ProxyCommand='corp-ssh-helper %h %p'"
       ]
+      print("command: ", command)
       if args.INTERNAL_IP:
         command.append("--internal-ip")
       commands.append(command)
@@ -245,7 +246,7 @@ def execute_main_command(main_command, slices, local_log_dir, zip_name):
       gcloud_command=[
           "gcloud", "alpha", "compute", "tpus", "tpu-vm", "ssh", cur_slice.name, f"--worker={worker_num}",
           "--command", remote_command_list_str, "--strict-host-key-checking=no",
-          f"--project={args.PROJECT}", f"--zone={args.ZONE}"]
+          f"--project={args.PROJECT}", f"--zone={args.ZONE}", "-o ProxyCommand='corp-ssh-helper %h %p'"]
       if args.INTERNAL_IP:
         gcloud_command.append("--internal-ip")
       commands.append(gcloud_command)
@@ -283,6 +284,7 @@ def run_commands(commands, id_to_print, jobname, worker_list, is_shell=False, ou
     else:
       output_log = subprocess.DEVNULL
 
+    print("children: ", children)
     children.append(subprocess.Popen(command, stdout=output_log, stderr=output_log, shell=is_shell))
 
   while True:
