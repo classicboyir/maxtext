@@ -482,6 +482,8 @@ def main(argv: Sequence[str]) -> None:
   os.environ["LIBTPU_INIT_ARGS"] = os.environ.get("LIBTPU_INIT_ARGS","") + " --xla_tpu_spmd_rng_bit_generator_unsafe=true"
   pyconfig.initialize(argv)
   config = pyconfig.config
+  print(config)
+  print(argv)
   validate_train_config(config)
   if jax.__version__ <= '0.4.23':
     cc.initialize_cache(os.path.expanduser(config.jax_cache_dir))
