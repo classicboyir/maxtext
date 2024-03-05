@@ -40,7 +40,7 @@ load_full_state_path: ""
 # problems with the checkpointer we recommend trying the synchronous one.
 enable_checkpointing: True
 async_checkpointing: True
-checkpoint_period: 10_000
+checkpoint_period: 10
 
 force_unroll: False # during generate_param_only_checkpoint should we unroll the loop?
 ############################### END CHECKPOINTING ##################################
